@@ -1213,23 +1213,21 @@ export default function CativoApp() {
           const canCheck = isViewingToday;
 
           return (
-            <div key={habit.id} style={{ ...styles.card, marginBottom: 8, padding: "10px 12px", border: `1px solid ${doneToday ? col + "50" : C.cardBorder}` }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <button onClick={() => canCheck && toggleHabitToday(habit.id)} disabled={!canCheck} style={{ flexShrink: 0, width: 34, height: 34, borderRadius: "50%", border: `2px solid ${doneToday ? col : C.muted}`, background: doneToday ? col : "transparent", cursor: canCheck ? "pointer" : "not-allowed", opacity: canCheck ? 1 : 0.5, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16 }}>
+            <div key={habit.id} style={{ ...styles.card, marginBottom: 6, padding: "8px 10px", border: `1px solid ${doneToday ? col + "50" : C.cardBorder}`, borderRadius: 10 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <button onClick={() => canCheck && toggleHabitToday(habit.id)} disabled={!canCheck} style={{ flexShrink: 0, width: 28, height: 28, borderRadius: "50%", border: `2px solid ${doneToday ? col : C.muted}`, background: doneToday ? col : "transparent", cursor: canCheck ? "pointer" : "not-allowed", opacity: canCheck ? 1 : 0.5, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13 }}>
                   {doneToday ? "âœ“" : (habit.icon || "ðŸ”")}
                 </button>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ fontWeight: 600, fontSize: 14, color: doneToday ? col : C.text }}>{habit.name}</span>
-                    <button onClick={() => deleteHabit(habit.id)} style={{ background: "none", border: "none", color: C.muted, cursor: "pointer", fontSize: 13, padding: "0 2px", flexShrink: 0 }}>âœ•</button>
+                    <span style={{ fontWeight: 600, fontSize: 13, color: doneToday ? col : C.text }}>{habit.name}</span>
+                    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                      <span style={{ color: "#f59e0b", fontSize: 10 }}>+{habit.xp || 20} XP</span>
+                      {streak > 0 && <span style={{ color: "#f59e0b", fontSize: 10 }}>ðŸ”¥{streak}</span>}
+                      <button onClick={() => deleteHabit(habit.id)} style={{ background: "none", border: "none", color: C.muted, cursor: "pointer", fontSize: 12, padding: "0 2px", flexShrink: 0 }}>âœ•</button>
+                    </div>
                   </div>
-                  <div style={{ display: "flex", gap: 6, marginTop: 4, flexWrap: "wrap", alignItems: "center" }}>
-                    {habit.startTime && <span style={{ color: C.muted, fontSize: 11 }}>ðŸ• {habit.startTime}{habit.endTime ? ` â†’ ${habit.endTime}` : ""}{dur ? ` (${dur})` : ""}</span>}
-                    {attr && <span style={{ color: attr.color, fontSize: 11 }}>{attr.icon}</span>}
-                    <span style={{ color: "#f59e0b", fontSize: 11 }}>+{habit.xp || 20} XP</span>
-                    {streak > 0 && <span style={{ color: "#f59e0b", fontSize: 11 }}>ðŸ”¥{streak}</span>}
-                    {!doneToday && isViewingToday && <span style={{ color: "#ef4444", fontSize: 10 }}>-{Math.floor((habit.xp || 20) / 2)} XP</span>}
-                  </div>
+                  {habit.startTime && <div style={{ color: C.muted, fontSize: 10, marginTop: 2 }}>{habit.startTime}{habit.endTime ? ` â†’ ${habit.endTime}` : ""}{dur ? ` Â· ${dur}` : ""}</div>}
                 </div>
               </div>
             </div>
@@ -1411,4 +1409,4 @@ export default function CativoApp() {
       )}
     </div>
   );
-}
+   }
