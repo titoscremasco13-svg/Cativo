@@ -996,7 +996,7 @@ export default function CativoApp() {
   }
 
   function VaultTab() {
-    const catColors = { resumo: "#3b82f6", estratÃ©gia: "#ef4444", reflexÃ£o: "#8b5cf6", aprendizado: "#10b981", ideia: "#f59e0b" };
+    const catColors = { resumo: "#3b82f6", "estratÃ©gia": "#ef4444", "reflexÃ£o": "#8b5cf6", aprendizado: "#10b981", ideia: "#f59e0b" };
     const [filter, setFilter] = useState("todos");
     const filtered = filter === "todos" ? (state.vault || []) : (state.vault || []).filter(v => v.category === filter);
     const [expanded, setExpanded] = useState(null);
@@ -1409,4 +1409,4 @@ export default function CativoApp() {
       )}
     </div>
   );
-   }
+                                                          }
