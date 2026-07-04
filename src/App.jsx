@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 
-// â”€â”€â”€ CONSTANTS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+//  CONSTANTS 
 
 const RANKS = [
   { name: "CLASSE D", min: 1, max: 25, color: "#6b7280", glow: "#6b728040", label: "Iniciante", bg: "#111827" },
@@ -55,34 +55,34 @@ const SALA_BRANCA_TITLES = [
 ];
 
 const ATTRIBUTES = [
-  { id: "discipline", name: "Disciplina", icon: "âš”ï¸", color: "#ef4444" },
-  { id: "intelligence", name: "InteligÃªncia", icon: "ðŸ§ ", color: "#3b82f6" },
-  { id: "physical", name: "Condicionamento FÃ­sico", icon: "ðŸ’ª", color: "#10b981" },
-  { id: "mental", name: "Controle Mental", icon: "ðŸŒ€", color: "#8b5cf6" },
-  { id: "social", name: "Habilidades Sociais", icon: "ðŸ¤", color: "#f59e0b" },
+  { id: "discipline", name: "Disciplina", icon: "[D]", color: "#ef4444" },
+  { id: "intelligence", name: "InteligÃªncia", icon: "[I]", color: "#3b82f6" },
+  { id: "physical", name: "Condicionamento FÃ­sico", icon: "[F]", color: "#10b981" },
+  { id: "mental", name: "Controle Mental", icon: "[CM]", color: "#8b5cf6" },
+  { id: "social", name: "Habilidades Sociais", icon: "[SC]", color: "#f59e0b" },
 ];
 
 const ACHIEVEMENTS = [
-  { id: "first_task", name: "Primeira Tarefa", desc: "Complete sua primeira tarefa", icon: "âœ…", xp: 50, condition: (s) => s.totalTasksDone >= 1 },
-  { id: "week_one", name: "Primeira Semana", desc: "Complete 7 dias de uso", icon: "ðŸ“…", xp: 200, condition: (s) => s.streak >= 7 },
-  { id: "streak_7", name: "7 Dias Seguidos", desc: "Mantenha streak de 7 dias", icon: "ðŸ”¥", xp: 150, condition: (s) => s.streak >= 7 },
-  { id: "streak_30", name: "30 Dias Seguidos", desc: "Mantenha streak de 30 dias", icon: "ðŸ”¥ðŸ”¥", xp: 500, condition: (s) => s.streak >= 30 },
-  { id: "streak_100", name: "100 Dias Seguidos", desc: "Mantenha streak de 100 dias", icon: "ðŸ’Ž", xp: 2000, condition: (s) => s.streak >= 100 },
-  { id: "xp_1000", name: "1.000 XP", desc: "Acumule 1.000 XP", icon: "â­", xp: 100, condition: (s) => s.totalXP >= 1000 },
-  { id: "xp_10000", name: "10.000 XP", desc: "Acumule 10.000 XP", icon: "ðŸŒŸ", xp: 500, condition: (s) => s.totalXP >= 10000 },
-  { id: "rank_c", name: "Classe C", desc: "Alcance a Classe C", icon: "ðŸ¥‰", xp: 300, condition: (s) => s.level >= 26 },
-  { id: "rank_b", name: "Classe B", desc: "Alcance a Classe B", icon: "ðŸ¥ˆ", xp: 500, condition: (s) => s.level >= 51 },
-  { id: "rank_a", name: "Classe A", desc: "Alcance a Classe A", icon: "ðŸ¥‡", xp: 1000, condition: (s) => s.level >= 76 },
-  { id: "sala_branca", name: "Sala Branca", desc: "Entre na Sala Branca", icon: "ðŸ¤", xp: 2000, condition: (s) => s.level >= 91 },
-  { id: "genius", name: "GÃªnio", desc: "Alcance o NÃ­vel 100", icon: "ðŸ‘‘", xp: 5000, condition: (s) => s.level >= 100 },
-  { id: "tasks_50", name: "50 Tarefas", desc: "Complete 50 tarefas", icon: "ðŸ“‹", xp: 200, condition: (s) => s.totalTasksDone >= 50 },
-  { id: "tasks_100", name: "100 Tarefas", desc: "Complete 100 tarefas", icon: "ðŸ“Š", xp: 400, condition: (s) => s.totalTasksDone >= 100 },
-  { id: "master_discipline", name: "Mestre da Disciplina", desc: "Disciplina nÃ­vel 50", icon: "âš”ï¸", xp: 800, condition: (s) => (s.attributes?.discipline?.level || 0) >= 50 },
-  { id: "master_intelligence", name: "Mestre da InteligÃªncia", desc: "InteligÃªncia nÃ­vel 50", icon: "ðŸ§ ", xp: 800, condition: (s) => (s.attributes?.intelligence?.level || 0) >= 50 },
-  { id: "master_consistency", name: "Mestre da ConsistÃªncia", desc: "Streak de 60 dias", icon: "ðŸ’ª", xp: 1200, condition: (s) => s.streak >= 60 },
-  { id: "evolution_7", name: "7 EvoluÃ§Ãµes", desc: "Registre 7 evoluÃ§Ãµes diÃ¡rias", icon: "ðŸ“ˆ", xp: 300, condition: (s) => (s.evolutions?.length || 0) >= 7 },
-  { id: "goals_10", name: "10 Metas", desc: "Crie 10 metas", icon: "ðŸŽ¯", xp: 200, condition: (s) => (s.goals?.length || 0) >= 10 },
-  { id: "vault_10", name: "Cofre Rico", desc: "Adicione 10 itens ao cofre", icon: "ðŸ“š", xp: 250, condition: (s) => (s.vault?.length || 0) >= 10 },
+  { id: "first_task", name: "Primeira Tarefa", desc: "Complete sua primeira tarefa", icon: "[V]", xp: 50, condition: (s) => s.totalTasksDone >= 1 },
+  { id: "week_one", name: "Primeira Semana", desc: "Complete 7 dias de uso", icon: "[CA]", xp: 200, condition: (s) => s.streak >= 7 },
+  { id: "streak_7", name: "7 Dias Seguidos", desc: "Mantenha streak de 7 dias", icon: "[ST]", xp: 150, condition: (s) => s.streak >= 7 },
+  { id: "streak_30", name: "30 Dias Seguidos", desc: "Mantenha streak de 30 dias", icon: "[ST][ST]", xp: 500, condition: (s) => s.streak >= 30 },
+  { id: "streak_100", name: "100 Dias Seguidos", desc: "Mantenha streak de 100 dias", icon: "", xp: 2000, condition: (s) => s.streak >= 100 },
+  { id: "xp_1000", name: "1.000 XP", desc: "Acumule 1.000 XP", icon: "[XP]", xp: 100, condition: (s) => s.totalXP >= 1000 },
+  { id: "xp_10000", name: "10.000 XP", desc: "Acumule 10.000 XP", icon: "[XP]", xp: 500, condition: (s) => s.totalXP >= 10000 },
+  { id: "rank_c", name: "Classe C", desc: "Alcance a Classe C", icon: "[3]", xp: 300, condition: (s) => s.level >= 26 },
+  { id: "rank_b", name: "Classe B", desc: "Alcance a Classe B", icon: "[2]", xp: 500, condition: (s) => s.level >= 51 },
+  { id: "rank_a", name: "Classe A", desc: "Alcance a Classe A", icon: "[1]", xp: 1000, condition: (s) => s.level >= 76 },
+  { id: "sala_branca", name: "Sala Branca", desc: "Entre na Sala Branca", icon: "[WR]", xp: 2000, condition: (s) => s.level >= 91 },
+  { id: "genius", name: "GÃªnio", desc: "Alcance o NÃ­vel 100", icon: "[K]", xp: 5000, condition: (s) => s.level >= 100 },
+  { id: "tasks_50", name: "50 Tarefas", desc: "Complete 50 tarefas", icon: "[T]", xp: 200, condition: (s) => s.totalTasksDone >= 50 },
+  { id: "tasks_100", name: "100 Tarefas", desc: "Complete 100 tarefas", icon: "[AN]", xp: 400, condition: (s) => s.totalTasksDone >= 100 },
+  { id: "master_discipline", name: "Mestre da Disciplina", desc: "Disciplina nÃ­vel 50", icon: "[D]", xp: 800, condition: (s) => (s.attributes?.discipline?.level || 0) >= 50 },
+  { id: "master_intelligence", name: "Mestre da InteligÃªncia", desc: "InteligÃªncia nÃ­vel 50", icon: "[I]", xp: 800, condition: (s) => (s.attributes?.intelligence?.level || 0) >= 50 },
+  { id: "master_consistency", name: "Mestre da ConsistÃªncia", desc: "Streak de 60 dias", icon: "[F]", xp: 1200, condition: (s) => s.streak >= 60 },
+  { id: "evolution_7", name: "7 EvoluÃ§Ãµes", desc: "Registre 7 evoluÃ§Ãµes diÃ¡rias", icon: "[UP]", xp: 300, condition: (s) => (s.evolutions?.length || 0) >= 7 },
+  { id: "goals_10", name: "10 Metas", desc: "Crie 10 metas", icon: "[G]", xp: 200, condition: (s) => (s.goals?.length || 0) >= 10 },
+  { id: "vault_10", name: "Cofre Rico", desc: "Adicione 10 itens ao cofre", icon: "[LV]", xp: 250, condition: (s) => (s.vault?.length || 0) >= 10 },
 ];
 
 const XP_PER_LEVEL = (level) => Math.floor(100 * Math.pow(1.15, level - 1));
@@ -117,7 +117,7 @@ function getAttrLevel(xp) {
   return level;
 }
 
-// â”€â”€â”€ HABIT WEEKDAYS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+//  HABIT WEEKDAYS 
 
 const WEEKDAYS = [
   { idx: 0, short: "Dom", full: "Domingo" },
@@ -178,7 +178,7 @@ const DESAFIOS = [
   { id: "d5", nome: "Consistente", desc: "Use o app por 7 dias seguidos", xp: 250, meta: 7, tipo: "uso" },
 ];
 
-// â”€â”€â”€ INITIAL STATE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+//  INITIAL STATE 
 
 const initialState = () => {
   try {
@@ -210,7 +210,7 @@ const initialState = () => {
   };
 };
 
-// â”€â”€â”€ AVATAR COMPONENT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+//  AVATAR COMPONENT 
 
 function Avatar({ level, rank }) {
   const tier = level <= 25 ? 0 : level <= 50 ? 1 : level <= 75 ? 2 : level <= 90 ? 3 : level <= 99 ? 4 : 5;
@@ -255,7 +255,7 @@ function Avatar({ level, rank }) {
       </>}
       {/* Emblem on chest */}
       {tier >= 1 && <circle cx="60" cy="100" r="8" fill="none" stroke={rank.color} strokeWidth="1.5" />}
-      {tier >= 2 && <text x="60" y="104" textAnchor="middle" fontSize="8" fill={rank.color}>â˜…</text>}
+      {tier >= 2 && <text x="60" y="104" textAnchor="middle" fontSize="8" fill={rank.color}>[*]</text>}
       {/* Particle effects */}
       {s.particles && [0,1,2,3].map(i => (
         <circle key={i} cx={45 + i * 10} cy={60 + Math.sin(i) * 20} r="2" fill={rank.color} opacity="0.5">
@@ -267,7 +267,7 @@ function Avatar({ level, rank }) {
   );
 }
 
-// â”€â”€â”€ ATTR BAR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+//  ATTR BAR 
 
 function AttrBar({ attr, xp, color }) {
   const level = getAttrLevel(xp);
@@ -285,7 +285,7 @@ function AttrBar({ attr, xp, color }) {
   );
 }
 
-// â”€â”€â”€ HEXAGON RADAR â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+//  HEXAGON RADAR 
 
 function RadarChart({ attributes, attrData }) {
   const cx = 90, cy = 90, r = 65;
@@ -323,7 +323,7 @@ function RadarChart({ attributes, attrData }) {
   );
 }
 
-// â”€â”€â”€ MAIN APP â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+//  MAIN APP 
 
 export default function CativoApp() {
   const [state, setState] = useState(initialState);
@@ -384,7 +384,7 @@ export default function CativoApp() {
       }
 
       setState(s => ({ ...s, lastActiveDate: today, streak: newStreak, habits, tasks, totalXP: Math.max(0, s.totalXP - xpPenalty) }));
-      if (xpPenalty > 0) showToast(`âš ï¸ -${xpPenalty} XP por compromissos nÃ£o cumpridos ontem`);
+      if (xpPenalty > 0) showToast(`[!] -${xpPenalty} XP por compromissos nÃ£o cumpridos ontem`);
     }
   }, []);
 
@@ -403,7 +403,7 @@ export default function CativoApp() {
         unlocked.push(a.id);
         changed = true;
         setNewAchievement(a);
-        showToast(`ðŸ† Conquista: ${a.name}!`);
+        showToast(`[TR] Conquista: ${a.name}!`);
       }
     });
     if (changed) setState(s => ({ ...s, achievements: unlocked }));
@@ -438,7 +438,7 @@ export default function CativoApp() {
       }
       return { ...s, tasks, totalXP: s.totalXP + xpGain, totalTasksDone: s.totalTasksDone + 1, attributes: newAttrs };
     });
-    showToast("âœ… Tarefa concluÃ­da! XP ganho!");
+    showToast("[V] Tarefa concluÃ­da! XP ganho!");
   }
 
   function deleteTask(taskId) {
@@ -483,7 +483,7 @@ export default function CativoApp() {
         <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 50% 50%, #ffffff08 0%, transparent 70%)" }} />
         <div style={{ textAlign: "center", zIndex: 1 }}>
           <div style={{ color: "#ffffff30", fontSize: 12, letterSpacing: 8, marginBottom: 40 }}>MODO SALA BRANCA</div>
-          <div style={{ width: 80, height: 80, borderRadius: "50%", border: "2px solid #fff", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 32px", fontSize: 32 }}>ðŸ¤</div>
+          <div style={{ width: 80, height: 80, borderRadius: "50%", border: "2px solid #fff", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 32px", fontSize: 32 }}>[WR]</div>
           {task ? (
             <>
               <div style={{ color: "#fff", fontSize: 22, fontWeight: 700, marginBottom: 8 }}>{task.name}</div>
@@ -495,11 +495,11 @@ export default function CativoApp() {
           <div style={{ fontSize: 56, fontWeight: 200, letterSpacing: 4, color: "#fff", marginBottom: 40, fontVariantNumeric: "tabular-nums" }}>{fmtTime(timer)}</div>
           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
             <button style={styles.btn("#fff")} onClick={() => setTimerRunning(r => !r)}>
-              {timerRunning ? "â¸ Pausar" : "â–¶ Iniciar"}
+              {timerRunning ? "[||] Pausar" : "[>] Iniciar"}
             </button>
-            <button style={styles.btn("#6b7280")} onClick={() => { setTimer(0); setTimerRunning(false); }}>â†º Reset</button>
-            {task && <button style={styles.btnSolid("#10b981")} onClick={() => { completeTask(whiteTask); setWhiteRoom(false); setTimer(0); setTimerRunning(false); }}>âœ“ Concluir</button>}
-            <button style={styles.btn("#ef4444")} onClick={() => { setWhiteRoom(false); setTimer(0); setTimerRunning(false); }}>âœ• Sair</button>
+            <button style={styles.btn("#6b7280")} onClick={() => { setTimer(0); setTimerRunning(false); }}>[R] Reset</button>
+            {task && <button style={styles.btnSolid("#10b981")} onClick={() => { completeTask(whiteTask); setWhiteRoom(false); setTimer(0); setTimerRunning(false); }}>[OK] Concluir</button>}
+            <button style={styles.btn("#ef4444")} onClick={() => { setWhiteRoom(false); setTimer(0); setTimerRunning(false); }}>[X] Sair</button>
           </div>
         </div>
       </div>
@@ -511,7 +511,7 @@ export default function CativoApp() {
       <div style={{ ...styles.card, width: "100%", maxWidth: 480, borderRadius: "20px 20px 0 0", padding: 24, maxHeight: "90vh", overflowY: "auto" }} onClick={e => e.stopPropagation()}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
           <span style={{ fontWeight: 700, fontSize: 18 }}>{t}</span>
-          <button onClick={() => setModal(null)} style={{ background: "none", border: "none", color: C.muted, fontSize: 20, cursor: "pointer" }}>âœ•</button>
+          <button onClick={() => setModal(null)} style={{ background: "none", border: "none", color: C.muted, fontSize: 20, cursor: "pointer" }}>[X]</button>
         </div>
         {children}
       </div>
@@ -541,7 +541,7 @@ export default function CativoApp() {
             <div><label style={styles.label}>InÃ­cio</label><input type="time" style={styles.input} value={form.startTime} onChange={e => setForm(f => ({ ...f, startTime: e.target.value }))} /></div>
             <div><label style={styles.label}>TÃ©rmino</label><input type="time" style={styles.input} value={form.endTime} onChange={e => setForm(f => ({ ...f, endTime: e.target.value }))} /></div>
           </div>
-          {dur && <div style={{ background: "#1f2937", borderRadius: 8, padding: "8px 12px", color: "#10b981", fontSize: 13 }}>â± DuraÃ§Ã£o: {dur}</div>}
+          {dur && <div style={{ background: "#1f2937", borderRadius: 8, padding: "8px 12px", color: "#10b981", fontSize: 13 }}>[TM] DuraÃ§Ã£o: {dur}</div>}
           <div><label style={styles.label}>Data</label><input type="date" style={styles.input} value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} /></div>
           <div><label style={styles.label}>Atributo</label>
             <select style={styles.input} value={form.attr} onChange={e => setForm(f => ({ ...f, attr: e.target.value }))}>
@@ -609,13 +609,13 @@ export default function CativoApp() {
       setModal(null); showToast("+80 XP â€” EvoluÃ§Ã£o registrada!");
     };
     return (
-      <ModalWrapper title="ðŸŒ± EvoluÃ§Ã£o de Hoje">
+      <ModalWrapper title="[EV] EvoluÃ§Ã£o de Hoje">
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           {[
-            { key: "learned", label: "O que aprendi hoje?", icon: "ðŸ“–" },
-            { key: "improved", label: "O que melhorei hoje?", icon: "ðŸ“ˆ" },
-            { key: "achieved", label: "O que conquistei hoje?", icon: "ðŸ†" },
-            { key: "tomorrow", label: "O que melhorar amanhÃ£?", icon: "ðŸŽ¯" },
+            { key: "learned", label: "O que aprendi hoje?", icon: "[L]" },
+            { key: "improved", label: "O que melhorei hoje?", icon: "[UP]" },
+            { key: "achieved", label: "O que conquistei hoje?", icon: "[TR]" },
+            { key: "tomorrow", label: "O que melhorar amanhÃ£?", icon: "[G]" },
           ].map(({ key, label, icon }) => (
             <div key={key}>
               <label style={styles.label}>{icon} {label}</label>
@@ -638,7 +638,7 @@ export default function CativoApp() {
     };
     const categories = ["resumo", "estratÃ©gia", "reflexÃ£o", "aprendizado", "ideia"];
     return (
-      <ModalWrapper title="ðŸ“š Cofre de Conhecimento">
+      <ModalWrapper title="[LV] Cofre de Conhecimento">
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           <div><label style={styles.label}>TÃ­tulo</label><input style={styles.input} placeholder="Ex: TÃ©cnica Pomodoro" value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} /></div>
           <div><label style={styles.label}>Categoria</label>
@@ -656,13 +656,13 @@ export default function CativoApp() {
   function SettingsModal() {
     const [name, setName] = useState(state.username);
     return (
-      <ModalWrapper title="âš™ï¸ ConfiguraÃ§Ãµes">
+      <ModalWrapper title=" ConfiguraÃ§Ãµes">
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           <div><label style={styles.label}>Seu Nome</label><input style={styles.input} value={name} onChange={e => setName(e.target.value)} /></div>
           <button style={styles.btnSolid(C.accent)} onClick={() => { setState(s => ({ ...s, username: name })); setModal(null); }}>Salvar</button>
           <div style={{ borderTop: "1px solid #1f2937", paddingTop: 12, marginTop: 4 }}>
             <button style={styles.btn("#ef4444")} onClick={() => { if (confirm("Resetar tudo? Esta aÃ§Ã£o Ã© irreversÃ­vel.")) { localStorage.removeItem("cativo_v2"); window.location.reload(); } }}>
-              ðŸ—‘ Resetar Progresso
+              [DEL] Resetar Progresso
             </button>
           </div>
           <div style={{ background: "#1f2937", borderRadius: 10, padding: 12 }}>
@@ -671,7 +671,7 @@ export default function CativoApp() {
               const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
               const url = URL.createObjectURL(blob);
               const a = document.createElement("a"); a.href = url; a.download = "cativo_backup.json"; a.click();
-            }}>â¬‡ Exportar JSON</button>
+            }}>[DL] Exportar JSON</button>
           </div>
         </div>
       </ModalWrapper>
@@ -693,8 +693,8 @@ export default function CativoApp() {
               <div style={{ color: "#9ca3af", fontSize: 12, marginBottom: 8 }}>{title}</div>
               <div style={{ display: "flex", gap: 8, marginBottom: 10, flexWrap: "wrap" }}>
                 <span style={{ background: `${rank.color}20`, border: `1px solid ${rank.color}40`, color: rank.color, borderRadius: 20, padding: "2px 10px", fontSize: 11, fontWeight: 700 }}>Nv. {level}</span>
-                <span style={{ background: "#f59e0b20", border: "1px solid #f59e0b40", color: "#f59e0b", borderRadius: 20, padding: "2px 10px", fontSize: 11 }}>ðŸ”¥ {state.streak} dias</span>
-                <span style={{ background: "#10b98120", border: "1px solid #10b98140", color: "#10b981", borderRadius: 20, padding: "2px 10px", fontSize: 11 }}>âœ… {state.totalTasksDone}</span>
+                <span style={{ background: "#f59e0b20", border: "1px solid #f59e0b40", color: "#f59e0b", borderRadius: 20, padding: "2px 10px", fontSize: 11 }}>[ST] {state.streak} dias</span>
+                <span style={{ background: "#10b98120", border: "1px solid #10b98140", color: "#10b981", borderRadius: 20, padding: "2px 10px", fontSize: 11 }}>[V] {state.totalTasksDone}</span>
               </div>
               <div style={{ marginBottom: 4 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11, color: C.muted, marginBottom: 4 }}>
@@ -711,10 +711,10 @@ export default function CativoApp() {
 
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 12 }}>
           {[
-            { label: "MissÃ£o", value: todayTasks.length > 0 ? `${doneTodayCount}/${todayTasks.length} tarefas` : "Sem missÃµes hoje", icon: "ðŸŽ¯" },
+            { label: "MissÃ£o", value: todayTasks.length > 0 ? `${doneTodayCount}/${todayTasks.length} tarefas` : "Sem missÃµes hoje", icon: "[G]" },
             { label: "Melhor Atributo", value: bestAttr.name, icon: bestAttr.icon },
-            { label: "A Melhorar", value: worstAttr.name, icon: "âš ï¸" },
-            { label: "Conquistas", value: `${state.achievements?.length || 0}/${ACHIEVEMENTS.length}`, icon: "ðŸ†" },
+            { label: "A Melhorar", value: worstAttr.name, icon: "[!]" },
+            { label: "Conquistas", value: `${state.achievements?.length || 0}/${ACHIEVEMENTS.length}`, icon: "[TR]" },
           ].map((s, i) => (
             <div key={i} style={{ ...styles.card, margin: 0, padding: 12 }}>
               <div style={{ color: C.muted, fontSize: 10, marginBottom: 4 }}>{s.icon} {s.label}</div>
@@ -804,7 +804,7 @@ export default function CativoApp() {
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
           <span style={{ fontWeight: 700, fontSize: 18 }}>Tarefas</span>
           <div style={{ display: "flex", gap: 8 }}>
-            <button style={styles.btn("#6b7280")} onClick={copyToTomorrow}>ðŸ“‹ Copiar</button>
+            <button style={styles.btn("#6b7280")} onClick={copyToTomorrow}>[T] Copiar</button>
             <button style={styles.btnSolid(C.accent)} onClick={() => setModal("newTask")}>+ Nova</button>
           </div>
         </div>
@@ -817,14 +817,14 @@ export default function CativoApp() {
 
         <div style={{ ...styles.card, background: "#0a0a0a", border: "1px solid #ffffff20", marginBottom: 12 }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-            <span style={{ color: "#ffffff80", fontSize: 13 }}>ðŸ¤ Modo Sala Branca</span>
+            <span style={{ color: "#ffffff80", fontSize: 13 }}>[WR] Modo Sala Branca</span>
             <button style={styles.btn("#fff")} onClick={() => { setWhiteTask(null); setWhiteRoom(true); }}>Entrar</button>
           </div>
         </div>
 
         {filtered.length === 0 ? (
           <div style={{ textAlign: "center", color: C.muted, padding: 40 }}>
-            <div style={{ fontSize: 40 }}>ðŸ“­</div>
+            <div style={{ fontSize: 40 }}></div>
             <div style={{ marginTop: 8 }}>Nenhuma tarefa aqui.</div>
             <button style={{ ...styles.btnSolid(C.accent), marginTop: 16 }} onClick={() => setModal("newTask")}>Criar Tarefa</button>
           </div>
@@ -842,25 +842,25 @@ export default function CativoApp() {
             <div key={task.id} style={{ ...styles.card, margin: "0 0 8px", border: `1px solid ${task.done ? "#10b98140" : hasConflict ? "#ef444440" : C.cardBorder}`, opacity: task.done ? 0.7 : 1 }}>
               <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
                 <button onClick={() => !task.done && completeTask(task.id)} style={{ flexShrink: 0, width: 24, height: 24, borderRadius: 6, border: `2px solid ${task.done ? "#10b981" : C.muted}`, background: task.done ? "#10b981" : "transparent", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", marginTop: 2 }}>
-                  {task.done && <span style={{ color: "#000", fontSize: 14, fontWeight: 700 }}>âœ“</span>}
+                  {task.done && <span style={{ color: "#000", fontSize: 14, fontWeight: 700 }}>[OK]</span>}
                 </button>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 3 }}>
                     <span style={{ fontWeight: 600, fontSize: 14, textDecoration: task.done ? "line-through" : "none", color: task.done ? C.muted : C.text }}>{task.name}</span>
-                    {hasConflict && <span style={{ color: "#ef4444", fontSize: 10 }}>âš ï¸ Conflito</span>}
+                    {hasConflict && <span style={{ color: "#ef4444", fontSize: 10 }}>[!] Conflito</span>}
                   </div>
                   {task.description && <div style={{ color: C.muted, fontSize: 12, marginBottom: 4 }}>{task.description}</div>}
                   <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
-                    {task.startTime && <span style={{ color: C.muted, fontSize: 11 }}>ðŸ• {task.startTime}{task.endTime ? ` â†’ ${task.endTime}` : ""}</span>}
-                    {dur && <span style={{ color: "#3b82f6", fontSize: 11 }}>â± {dur}</span>}
+                    {task.startTime && <span style={{ color: C.muted, fontSize: 11 }}> {task.startTime}{task.endTime ? `  ${task.endTime}` : ""}</span>}
+                    {dur && <span style={{ color: "#3b82f6", fontSize: 11 }}>[TM] {dur}</span>}
                     {attr && <span style={{ fontSize: 11, color: attr.color }}>{attr.icon} {attr.name}</span>}
                     <span style={{ color: "#f59e0b", fontSize: 11 }}>+{task.xp || 30} XP</span>
-                    {!task.done && <span style={{ color: "#ef4444", fontSize: 10 }}>âš ï¸ -{Math.floor((task.xp || 30) / 2)} XP se nÃ£o cumprir</span>}
+                    {!task.done && <span style={{ color: "#ef4444", fontSize: 10 }}>[!] -{Math.floor((task.xp || 30) / 2)} XP se nÃ£o cumprir</span>}
                   </div>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                  {!task.done && <button style={{ background: "#ffffff10", border: "none", color: "#fff", borderRadius: 6, padding: "4px 8px", cursor: "pointer", fontSize: 11 }} onClick={() => { setWhiteTask(task.id); setWhiteRoom(true); }}>ðŸ¤</button>}
-                  <button style={{ background: "#ef444420", border: "none", color: "#ef4444", borderRadius: 6, padding: "4px 8px", cursor: "pointer", fontSize: 11 }} onClick={() => deleteTask(task.id)}>âœ•</button>
+                  {!task.done && <button style={{ background: "#ffffff10", border: "none", color: "#fff", borderRadius: 6, padding: "4px 8px", cursor: "pointer", fontSize: 11 }} onClick={() => { setWhiteTask(task.id); setWhiteRoom(true); }}>[WR]</button>}
+                  <button style={{ background: "#ef444420", border: "none", color: "#ef4444", borderRadius: 6, padding: "4px 8px", cursor: "pointer", fontSize: 11 }} onClick={() => deleteTask(task.id)}>[X]</button>
                 </div>
               </div>
             </div>
@@ -888,7 +888,7 @@ export default function CativoApp() {
             return (
               <div key={type} style={{ ...styles.card, margin: 0, padding: 10, textAlign: "center" }}>
                 <div style={{ color: typeColors[type], fontSize: 16, marginBottom: 4 }}>
-                  {type === "daily" ? "ðŸ“…" : type === "weekly" ? "ðŸ“†" : type === "monthly" ? "ðŸ—“" : "ðŸ“Œ"}
+                  {type === "daily" ? "[CA]" : type === "weekly" ? "" : type === "monthly" ? "" : ""}
                 </div>
                 <div style={{ fontSize: 12, fontWeight: 700 }}>{done}/{count}</div>
                 <div style={{ fontSize: 9, color: C.muted }}>{label}</div>
@@ -899,7 +899,7 @@ export default function CativoApp() {
 
         {(state.goals || []).length === 0 ? (
           <div style={{ textAlign: "center", color: C.muted, padding: 40 }}>
-            <div style={{ fontSize: 40 }}>ðŸŽ¯</div>
+            <div style={{ fontSize: 40 }}>[G]</div>
             <div style={{ marginTop: 8 }}>Nenhuma meta criada ainda.</div>
             <button style={{ ...styles.btnSolid(C.accent), marginTop: 16 }} onClick={() => setModal("newGoal")}>Criar Meta</button>
           </div>
@@ -913,13 +913,13 @@ export default function CativoApp() {
                 <div style={{ flex: 1 }}>
                   <div style={{ display: "flex", gap: 6, alignItems: "center", marginBottom: 4 }}>
                     <span style={{ background: `${col}20`, color: col, borderRadius: 6, padding: "2px 8px", fontSize: 10, fontWeight: 700 }}>{goalTypes[goal.type]}</span>
-                    {overdue && <span style={{ color: "#ef4444", fontSize: 10 }}>âš ï¸ Vencida</span>}
-                    {goal.done && <span style={{ color: "#10b981", fontSize: 10 }}>âœ… ConcluÃ­da</span>}
+                    {overdue && <span style={{ color: "#ef4444", fontSize: 10 }}>[!] Vencida</span>}
+                    {goal.done && <span style={{ color: "#10b981", fontSize: 10 }}>[V] ConcluÃ­da</span>}
                   </div>
                   <div style={{ fontWeight: 700, fontSize: 14, textDecoration: goal.done ? "line-through" : "none", color: goal.done ? C.muted : C.text }}>{goal.name}</div>
                   {goal.description && <div style={{ color: C.muted, fontSize: 12, marginTop: 3 }}>{goal.description}</div>}
                   <div style={{ display: "flex", gap: 10, marginTop: 6, fontSize: 11 }}>
-                    {deadline && <span style={{ color: C.muted }}>ðŸ“… {deadline.toLocaleDateString("pt-BR")}</span>}
+                    {deadline && <span style={{ color: C.muted }}>[CA] {deadline.toLocaleDateString("pt-BR")}</span>}
                     <span style={{ color: "#f59e0b" }}>+{goal.xp} XP</span>
                   </div>
                 </div>
@@ -928,9 +928,9 @@ export default function CativoApp() {
                     <button style={{ ...styles.btnSolid("#10b981"), padding: "6px 10px", fontSize: 11 }} onClick={() => {
                       setState(s => ({ ...s, goals: s.goals.map(g => g.id === goal.id ? { ...g, done: true } : g), totalXP: s.totalXP + goal.xp }));
                       showToast(`+${goal.xp} XP â€” Meta concluÃ­da!`);
-                    }}>âœ“</button>
+                    }}>[OK]</button>
                   )}
-                  <button style={{ background: "#ef444420", border: "none", color: "#ef4444", borderRadius: 8, padding: "6px 10px", cursor: "pointer", fontSize: 11 }} onClick={() => setState(s => ({ ...s, goals: s.goals.filter(g => g.id !== goal.id) }))}>âœ•</button>
+                  <button style={{ background: "#ef444420", border: "none", color: "#ef4444", borderRadius: 8, padding: "6px 10px", cursor: "pointer", fontSize: 11 }} onClick={() => setState(s => ({ ...s, goals: s.goals.filter(g => g.id !== goal.id) }))}>[X]</button>
                 </div>
               </div>
             </div>
@@ -962,16 +962,16 @@ export default function CativoApp() {
         <div style={{ fontWeight: 700, fontSize: 18, marginBottom: 16 }}>AnÃ¡lise & Progresso</div>
 
         <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 12 }}>
-          <StatCard icon="âš¡" label="Total XP" value={state.totalXP.toLocaleString()} color={rank.color} />
-          <StatCard icon="ðŸ”¥" label="Streak" value={state.streak} color="#f59e0b" />
-          <StatCard icon="âœ…" label="Tarefas" value={totalDone} color="#10b981" />
-          <StatCard icon="ðŸŽ¯" label="Metas" value={totalGoalsDone} color="#3b82f6" />
-          <StatCard icon="ðŸ†" label="Conquistas" value={unlockedAch} color="#a855f7" />
-          <StatCard icon="ðŸ“š" label="No Cofre" value={vaultSize} color="#f59e0b" />
+          <StatCard icon="[Z]" label="Total XP" value={state.totalXP.toLocaleString()} color={rank.color} />
+          <StatCard icon="[ST]" label="Streak" value={state.streak} color="#f59e0b" />
+          <StatCard icon="[V]" label="Tarefas" value={totalDone} color="#10b981" />
+          <StatCard icon="[G]" label="Metas" value={totalGoalsDone} color="#3b82f6" />
+          <StatCard icon="[TR]" label="Conquistas" value={unlockedAch} color="#a855f7" />
+          <StatCard icon="[LV]" label="No Cofre" value={vaultSize} color="#f59e0b" />
         </div>
 
         <div style={{ ...styles.card, marginBottom: 12 }}>
-          <div style={{ color: C.muted, fontSize: 12, marginBottom: 10, letterSpacing: 2 }}>PROGRESSO â€” NÃVEL {level} â†’ {level + 1}</div>
+          <div style={{ color: C.muted, fontSize: 12, marginBottom: 10, letterSpacing: 2 }}>PROGRESSO â€” NÃVEL {level}  {level + 1}</div>
           <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, color: C.muted, marginBottom: 6 }}>
             <span>{xpInLevel.toLocaleString()} XP</span>
             <span>{xpNeeded.toLocaleString()} XP necessÃ¡rios</span>
@@ -1006,9 +1006,9 @@ export default function CativoApp() {
             <div style={{ color: C.muted, fontSize: 12, marginBottom: 12, letterSpacing: 2 }}>ÃšLTIMAS EVOLUÃ‡Ã•ES</div>
             {[...(state.evolutions || [])].reverse().slice(0, 3).map((ev, i) => (
               <div key={i} style={{ borderLeft: `2px solid ${C.accent}`, paddingLeft: 12, marginBottom: 12 }}>
-                <div style={{ color: C.muted, fontSize: 11, marginBottom: 4 }}>ðŸ“… {ev.date}</div>
-                {ev.learned && <div style={{ fontSize: 12, marginBottom: 2 }}><span style={{ color: "#3b82f6" }}>ðŸ“–</span> {ev.learned}</div>}
-                {ev.achieved && <div style={{ fontSize: 12 }}><span style={{ color: "#10b981" }}>ðŸ†</span> {ev.achieved}</div>}
+                <div style={{ color: C.muted, fontSize: 11, marginBottom: 4 }}>[CA] {ev.date}</div>
+                {ev.learned && <div style={{ fontSize: 12, marginBottom: 2 }}><span style={{ color: "#3b82f6" }}>[L]</span> {ev.learned}</div>}
+                {ev.achieved && <div style={{ fontSize: 12 }}><span style={{ color: "#10b981" }}>[TR]</span> {ev.achieved}</div>}
               </div>
             ))}
           </div>
@@ -1074,7 +1074,7 @@ export default function CativoApp() {
             return (
               <div key={a.id} style={{ ...styles.card, margin: 0, padding: 14, border: `1px solid ${isUnlocked ? "#f59e0b40" : C.cardBorder}`, opacity: isUnlocked ? 1 : 0.5, position: "relative", overflow: "hidden" }}>
                 {isUnlocked && <div style={{ position: "absolute", top: 0, right: 0, width: 0, height: 0, borderLeft: "24px solid transparent", borderTop: "24px solid #f59e0b" }} />}
-                <div style={{ fontSize: 28, marginBottom: 6 }}>{isUnlocked ? a.icon : "ðŸ”’"}</div>
+                <div style={{ fontSize: 28, marginBottom: 6 }}>{isUnlocked ? a.icon : ""}</div>
                 <div style={{ fontWeight: 700, fontSize: 12, marginBottom: 3, color: isUnlocked ? C.text : C.muted }}>{a.name}</div>
                 <div style={{ color: C.muted, fontSize: 10, marginBottom: 6 }}>{a.desc}</div>
                 <div style={{ color: "#f59e0b", fontSize: 10, fontWeight: 700 }}>+{a.xp} XP</div>
@@ -1096,7 +1096,7 @@ export default function CativoApp() {
       <div style={{ padding: 16 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
           <div>
-            <div style={{ fontWeight: 700, fontSize: 18 }}>ðŸ“š Cofre</div>
+            <div style={{ fontWeight: 700, fontSize: 18 }}>[LV] Cofre</div>
             <div style={{ color: C.muted, fontSize: 12 }}>{state.vault?.length || 0} itens salvos</div>
           </div>
           <button style={styles.btnSolid(C.accent)} onClick={() => setModal("vault")}>+ Novo</button>
@@ -1108,7 +1108,7 @@ export default function CativoApp() {
         </div>
         {filtered.length === 0 ? (
           <div style={{ textAlign: "center", color: C.muted, padding: 40 }}>
-            <div style={{ fontSize: 40 }}>ðŸ“–</div>
+            <div style={{ fontSize: 40 }}>[L]</div>
             <div style={{ marginTop: 8 }}>Nenhum conhecimento salvo aqui.</div>
           </div>
         ) : filtered.map(item => {
@@ -1124,7 +1124,7 @@ export default function CativoApp() {
                   <div style={{ fontWeight: 600, fontSize: 14 }}>{item.title}</div>
                   {expanded === item.id && <div style={{ color: C.muted, fontSize: 13, marginTop: 8, lineHeight: 1.6, whiteSpace: "pre-wrap" }}>{item.content}</div>}
                 </div>
-                <span style={{ color: C.muted, fontSize: 12, marginLeft: 8 }}>{expanded === item.id ? "â–²" : "â–¼"}</span>
+                <span style={{ color: C.muted, fontSize: 12, marginLeft: 8 }}>{expanded === item.id ? "" : ""}</span>
               </div>
             </div>
           );
@@ -1197,12 +1197,12 @@ export default function CativoApp() {
       <div style={{ padding: 16 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
           <div>
-            <div style={{ fontWeight: 700, fontSize: 18 }}>ðŸ” HÃ¡bitos</div>
+            <div style={{ fontWeight: 700, fontSize: 18 }}>[H] HÃ¡bitos</div>
             <div style={{ color: C.muted, fontSize: 12 }}>{todayHabits.filter(h => (h.doneDates || []).includes(today)).length}/{todayHabits.length} concluÃ­dos hoje</div>
 
           </div>
           <div style={{ display: "flex", gap: 8 }}>
-            {dayHabits.length > 0 && <button style={styles.btn("#6b7280")} onClick={() => setCopyModal(true)}>ðŸ“‹ Copiar</button>}
+            {dayHabits.length > 0 && <button style={styles.btn("#6b7280")} onClick={() => setCopyModal(true)}>[T] Copiar</button>}
             <button style={styles.btnSolid(C.accent)} onClick={() => setModal("newHabit")}>+ Novo</button>
           </div>
         </div>
@@ -1210,7 +1210,7 @@ export default function CativoApp() {
         {copyModal && (
           <div style={{ position: "fixed", inset: 0, background: "#000000cc", zIndex: 100, display: "flex", alignItems: "center", justifyContent: "center" }} onClick={() => setCopyModal(false)}>
             <div style={{ ...styles.card, width: 300, padding: 24 }} onClick={e => e.stopPropagation()}>
-              <div style={{ fontWeight: 700, fontSize: 16, marginBottom: 4 }}>ðŸ“‹ Copiar hÃ¡bitos</div>
+              <div style={{ fontWeight: 700, fontSize: 16, marginBottom: 4 }}>[T] Copiar hÃ¡bitos</div>
               <div style={{ color: C.muted, fontSize: 13, marginBottom: 16 }}>Copiar hÃ¡bitos de {WEEKDAYS[selectedDay].full} para:</div>
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 {WEEKDAYS.filter(w => w.idx !== selectedDay).map(w => (
@@ -1266,7 +1266,7 @@ export default function CativoApp() {
                 const attr = ATTRIBUTES.find(a => a.id === h.attr);
                 return (
                   <div key={h.id} title={`${h.name} ${h.startTime}â€“${h.endTime}`} style={{ position: "absolute", left: `${left}%`, width: `${Math.max(width, 2)}%`, top: 4, height: 28, background: done ? (attr?.color || C.accent) : `${attr?.color || C.accent}40`, borderRadius: 4, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", cursor: "default", border: `1px solid ${attr?.color || C.accent}60` }}>
-                    <span style={{ fontSize: 9, color: "#fff", fontWeight: 700, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", padding: "0 3px" }}>{h.icon || "ðŸ”"}</span>
+                    <span style={{ fontSize: 9, color: "#fff", fontWeight: 700, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", padding: "0 3px" }}>{h.icon || "[H]"}</span>
                   </div>
                 );
               })}
@@ -1279,14 +1279,14 @@ export default function CativoApp() {
 
         {habits.length === 0 ? (
           <div style={{ textAlign: "center", color: C.muted, padding: 40 }}>
-            <div style={{ fontSize: 44 }}>ðŸ”</div>
+            <div style={{ fontSize: 44 }}>[H]</div>
             <div style={{ marginTop: 8, fontWeight: 600 }}>Nenhum hÃ¡bito criado ainda.</div>
             <div style={{ fontSize: 12, marginTop: 4 }}>Crie hÃ¡bitos com horÃ¡rio para construir sua rotina.</div>
             <button style={{ ...styles.btnSolid(C.accent), marginTop: 20 }} onClick={() => setModal("newHabit")}>Criar HÃ¡bito</button>
           </div>
         ) : dayHabits.length === 0 ? (
           <div style={{ textAlign: "center", color: C.muted, padding: 40 }}>
-            <div style={{ fontSize: 44 }}>ðŸ“…</div>
+            <div style={{ fontSize: 44 }}>[CA]</div>
             <div style={{ marginTop: 8, fontWeight: 600 }}>Nenhum hÃ¡bito em {WEEKDAYS[selectedDay].full}.</div>
             <div style={{ fontSize: 12, marginTop: 4 }}>Crie um hÃ¡bito e marque esse dia, ou escolha outro dia acima.</div>
           </div>
@@ -1307,18 +1307,18 @@ export default function CativoApp() {
             <div key={habit.id} style={{ ...styles.card, marginBottom: 6, padding: "8px 10px", border: `1px solid ${doneToday ? col + "50" : C.cardBorder}`, borderRadius: 10 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <button onClick={() => canCheck && toggleHabitToday(habit.id)} disabled={!canCheck} style={{ flexShrink: 0, width: 28, height: 28, borderRadius: "50%", border: `2px solid ${doneToday ? col : C.muted}`, background: doneToday ? col : "transparent", cursor: canCheck ? "pointer" : "not-allowed", opacity: canCheck ? 1 : 0.5, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13 }}>
-                  {doneToday ? "âœ“" : (habit.icon || "ðŸ”")}
+                  {doneToday ? "[OK]" : (habit.icon || "[H]")}
                 </button>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <span style={{ fontWeight: 600, fontSize: 13, color: doneToday ? col : C.text }}>{habit.name}</span>
                     <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                       <span style={{ color: "#f59e0b", fontSize: 10 }}>+{habit.xp || 20} XP</span>
-                      {streak > 0 && <span style={{ color: "#f59e0b", fontSize: 10 }}>ðŸ”¥{streak}</span>}
-                      <button onClick={() => deleteHabit(habit.id)} style={{ background: "none", border: "none", color: C.muted, cursor: "pointer", fontSize: 12, padding: "0 2px", flexShrink: 0 }}>âœ•</button>
+                      {streak > 0 && <span style={{ color: "#f59e0b", fontSize: 10 }}>[ST]{streak}</span>}
+                      <button onClick={() => deleteHabit(habit.id)} style={{ background: "none", border: "none", color: C.muted, cursor: "pointer", fontSize: 12, padding: "0 2px", flexShrink: 0 }}>[X]</button>
                     </div>
                   </div>
-                  {habit.startTime && <div style={{ color: C.muted, fontSize: 10, marginTop: 2 }}>{habit.startTime}{habit.endTime ? ` â†’ ${habit.endTime}` : ""}{dur ? ` Â· ${dur}` : ""}</div>}
+                  {habit.startTime && <div style={{ color: C.muted, fontSize: 10, marginTop: 2 }}>{habit.startTime}{habit.endTime ? `  ${habit.endTime}` : ""}{dur ? ` Â· ${dur}` : ""}</div>}
                 </div>
               </div>
             </div>
@@ -1329,8 +1329,8 @@ export default function CativoApp() {
   }
 
   function NewHabitModal() {
-    const [form, setForm] = useState({ name: "", description: "", icon: "ðŸ”", startTime: "", endTime: "", days: [], attr: "discipline", xp: 20 });
-    const icons = ["ðŸ”","ðŸ“–","ðŸ’ª","ðŸ§˜","ðŸƒ","âœï¸","ðŸ¥—","ðŸ’§","ðŸ›Œ","ðŸ§ ","âš”ï¸","ðŸŽ¯","ðŸŽ¨","ðŸŽµ","ðŸ’»"];
+    const [form, setForm] = useState({ name: "", description: "", icon: "[H]", startTime: "", endTime: "", days: [], attr: "discipline", xp: 20 });
+    const icons = ["[H]","[L]","[F]","[M]","[C]","[E]","[N]","[A]","[S]","[I]","[D]","[G]","[AR]","[MU]","[PC]"];
     const dur = form.startTime && form.endTime ? (() => {
       const [sh, sm] = form.startTime.split(":").map(Number);
       const [eh, em] = form.endTime.split(":").map(Number);
@@ -1353,7 +1353,7 @@ export default function CativoApp() {
     };
 
     return (
-      <ModalWrapper title="ðŸ” Novo HÃ¡bito">
+      <ModalWrapper title="[H] Novo HÃ¡bito">
         <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           <div>
             <label style={styles.label}>Ãcone</label>
@@ -1368,7 +1368,7 @@ export default function CativoApp() {
           <div><label style={styles.label}>DescriÃ§Ã£o (opcional)</label><input style={styles.input} placeholder="Detalhes do hÃ¡bito..." value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} /></div>
 
           <div>
-            <label style={styles.label}>â° HorÃ¡rio</label>
+            <label style={styles.label}> HorÃ¡rio</label>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
               <div>
                 <div style={{ color: C.muted, fontSize: 11, marginBottom: 4 }}>InÃ­cio</div>
@@ -1381,13 +1381,13 @@ export default function CativoApp() {
             </div>
             {dur && (
               <div style={{ background: `${C.accent}15`, border: `1px solid ${C.accent}30`, borderRadius: 8, padding: "8px 12px", marginTop: 8, color: C.accent, fontSize: 13, fontWeight: 600, textAlign: "center" }}>
-                â± DuraÃ§Ã£o: {dur}
+                [TM] DuraÃ§Ã£o: {dur}
               </div>
             )}
           </div>
 
           <div>
-            <label style={styles.label}>ðŸ“… Dias da Semana</label>
+            <label style={styles.label}>[CA] Dias da Semana</label>
             <div style={{ display: "flex", gap: 6, marginBottom: 8 }}>
               <button onClick={() => setForm(f => ({ ...f, days: [0,1,2,3,4,5,6] }))} style={{ flex: 1, padding: "6px 0", borderRadius: 6, border: "1px solid #374151", background: "#1f2937", color: C.muted, fontSize: 11, cursor: "pointer" }}>Todos</button>
               <button onClick={() => setForm(f => ({ ...f, days: [1,2,3,4,5] }))} style={{ flex: 1, padding: "6px 0", borderRadius: 6, border: "1px solid #374151", background: "#1f2937", color: C.muted, fontSize: 11, cursor: "pointer" }}>Dias Ãšteis</button>
@@ -1428,13 +1428,13 @@ export default function CativoApp() {
   }
 
   const tabs = [
-    { id: "profile", icon: "âš”ï¸", label: "Perfil" },
-    { id: "tasks", icon: "ðŸ“‹", label: "Tarefas" },
-    { id: "habits", icon: "ðŸ”", label: "HÃ¡bitos" },
-    { id: "goals", icon: "ðŸŽ¯", label: "Metas" },
-    { id: "analytics", icon: "ðŸ“Š", label: "AnÃ¡lise" },
-    { id: "achievements", icon: "ðŸ†", label: "Conquistas" },
-    { id: "vault", icon: "ðŸ“š", label: "Cofre" },
+    { id: "profile", icon: "[D]", label: "Perfil" },
+    { id: "tasks", icon: "[T]", label: "Tarefas" },
+    { id: "habits", icon: "[H]", label: "HÃ¡bitos" },
+    { id: "goals", icon: "[G]", label: "Metas" },
+    { id: "analytics", icon: "[AN]", label: "AnÃ¡lise" },
+    { id: "achievements", icon: "[TR]", label: "Conquistas" },
+    { id: "vault", icon: "[LV]", label: "Cofre" },
   ];
 
   return (
@@ -1442,7 +1442,7 @@ export default function CativoApp() {
       <div style={{ background: `linear-gradient(180deg, ${rank.bg}cc, transparent)`, padding: "16px 16px 0", position: "sticky", top: 0, zIndex: 10 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: 12 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <div style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg, #7c3aed, #2563eb)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: 16, color: "#fff", boxShadow: "0 0 12px #7c3aed60" }}>FP</div>
+            <img src="data:image/jpeg;base64,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" style={{ width: 40, height: 40, borderRadius: 10, objectFit: "cover", boxShadow: "0 0 12px #7c3aed60" }} alt="logo" />
             <div>
               <div style={{ color: rank.color, fontSize: 10, fontWeight: 700, letterSpacing: 3 }}>C A T I V O</div>
               <div style={{ color: C.muted, fontSize: 11 }}>Sistema de Evolucao Pessoal</div>
@@ -1452,7 +1452,7 @@ export default function CativoApp() {
             <div style={{ background: `${rank.color}20`, border: `1px solid ${rank.color}40`, borderRadius: 20, padding: "4px 12px" }}>
               <span style={{ color: rank.color, fontSize: 12, fontWeight: 700 }}>Nv. {level}</span>
             </div>
-            <button style={{ background: "none", border: "1px solid #374151", borderRadius: 8, color: C.muted, padding: "6px 10px", cursor: "pointer", fontSize: 14 }} onClick={() => setModal("settings")}>âš™ï¸</button>
+            <button style={{ background: "none", border: "1px solid #374151", borderRadius: 8, color: C.muted, padding: "6px 10px", cursor: "pointer", fontSize: 14 }} onClick={() => setModal("settings")}></button>
           </div>
         </div>
       </div>
@@ -1503,4 +1503,4 @@ export default function CativoApp() {
       )}
     </div>
   );
-                                                           }
+}
